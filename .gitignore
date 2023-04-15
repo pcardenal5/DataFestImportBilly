@@ -1,1 +1,3 @@
 data/
+API/__pycache__
+API/models
