@@ -9,7 +9,7 @@ import io
 from fastapi.responses import StreamingResponse
 app = FastAPI()
 import json
-
+from fastapi import Response
 
 @app.post('/Batch Method/')
 async def create_data_file(
@@ -17,7 +17,7 @@ async def create_data_file(
         ):
     csv=pd.read_csv("../data/waste.csv",sep=';')
     #csv=pd.read_csv(StringIO(str(data_file.file.read(), 'utf-8')), encoding='utf-8')
-    prediction= PredictService(pathToModelHard='C:/Users/juano/Documents/HACKATONS/DatafestIKEA2023/DataFestImportBilly/API/models/modelo_el_00075.pkl',pathToModelSoft='C:/Users/juano/Documents/HACKATONS/DatafestIKEA2023/DataFestImportBilly/API/models/modelo_el_005.pkl')
+    prediction= PredictService(pathToModelHard='C:/Users/juano/Documents/HACKATONS/DatafestIKEA2023/DataFestImportBilly/API/models/modelo_el_00075.pkl',pathToModelSoft='C:/Users/juano/Documents/HACKATONS/DatafestIKEA2023/DataFestImportBilly/API/models/modelo_el_005.pkl', pathToVariables='C:/Users/juano/Documents/HACKATONS/DatafestIKEA2023/DataFestImportBilly/data/OneHotEnconding.csv')
     solution=prediction.predict(csv)
     stream = io.StringIO()
     solution.to_csv(stream, index = False)
@@ -29,7 +29,9 @@ async def create_data_file(
 @app.post("/Real Time/")
 def create_upload_files(upload_file: UploadFile = File(...)):
     json_data = json.load(upload_file.file)
-    return {"data_in_file": json_data}
+    prediction= PredictService(pathToModelHard='C:/Users/juano/Documents/HACKATONS/DatafestIKEA2023/DataFestImportBilly/API/models/modelo_el_00075.pkl',pathToModelSoft='C:/Users/juano/Documents/HACKATONS/DatafestIKEA2023/DataFestImportBilly/API/models/modelo_el_005.pkl', pathToVariables='C:/Users/juano/Documents/HACKATONS/DatafestIKEA2023/DataFestImportBilly/data/OneHotEnconding.csv')
+    solution=prediction.predictJson(json_data)
+    return Response(content=solution, media_type="application/json")
 @app.post('/uploadfile/')
 async def create_data_file(
         experiment: str = Form(...),
@@ -41,7 +43,7 @@ async def create_data_file(
     #decoded = base64.b64decode(data_file.file)
     #decoded = io.StringIO(decoded.decode('utf-8'))
     
-    print(pd.read_csv(data_file.file, sep='\t'))
+    print(pd.read_csv(data_file.file, sep='/t'))
 
     return {'filename': data_file.filename, 
             'experiment':experiment, 
