@@ -20,7 +20,8 @@ async def create_data_file(
     prediction= PredictService(pathToModelHard='C:/Users/juano/Documents/HACKATONS/DatafestIKEA2023/DataFestImportBilly/API/models/modelo_el_00075.pkl',pathToModelSoft='C:/Users/juano/Documents/HACKATONS/DatafestIKEA2023/DataFestImportBilly/API/models/modelo_el_005.pkl', pathToVariables='C:/Users/juano/Documents/HACKATONS/DatafestIKEA2023/DataFestImportBilly/data/OneHotEnconding.csv')
     solution=prediction.predict(csv)
     stream = io.StringIO()
-    solution.to_csv(stream, index = False)
+    # Añado el separador de columnas ;
+    solution.to_csv(stream, index = False , sep=';')
     response = StreamingResponse(iter([stream.getvalue()]),
                                  media_type="text/csv"
                                 )
